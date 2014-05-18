@@ -586,14 +586,19 @@ public class ExchangeDirectoryProvider extends ContentProvider {
 
         @Override
         public int compare(GalSortKey lhs, GalSortKey rhs) {
-            final int res = collator.compare(lhs.sortName, rhs.sortName);
-            if (res != 0) {
-                return res;
+            try {
+                final int res = collator.compare(lhs.sortName, rhs.sortName);
+                if (res != 0) {
+                    return res;
+                }
+                if (lhs.id != rhs.id) {
+                    return lhs.id > rhs.id ? 1 : -1;
+                }
+                return 0;
             }
-            if (lhs.id != rhs.id) {
-                return lhs.id > rhs.id ? 1 : -1;
+            catch (NullPointerException e) {
+                LogUtils.d(TAG, "ExchangeDirectoryProvider: no DisplayName key found");
             }
-            return 0;
         }
     }
 
